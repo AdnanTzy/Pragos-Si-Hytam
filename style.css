@@ -16,11 +16,14 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   height: 100%;
   background: black;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,6 +31,7 @@ html, body {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  position: fixed;
 }
 
 /* === ANIMATIONS === */
@@ -55,15 +59,15 @@ html, body {
 #menu {
   text-align: center;
   color: var(--text-light);
-  width: 360px;
-  height: 640px;
+  width: 100%;
+  height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  border-radius: 16px;
+  padding: 5%;
+  border-radius: 0;
   overflow: hidden;
   z-index: 1;
 }
@@ -80,26 +84,27 @@ html, body {
 }
 
 .title {
-  font-size: 42px;
-  margin-bottom: 20px;
+  font-size: 10vw;
+  margin-bottom: 4vh;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   color: var(--primary);
   animation: float 3s ease-in-out infinite;
 }
 
 .subtitle {
-  font-size: 18px;
-  margin-bottom: 30px;
+  font-size: 4vw;
+  margin-bottom: 6vh;
   max-width: 80%;
   line-height: 1.4;
+  text-align: center;
 }
 
 /* === TOMBOL === */
 .menu-btn, .btn {
   display: block;
-  margin: 15px auto;
-  padding: 14px 28px;
-  font-size: 18px;
+  margin: 2vh auto;
+  padding: 3vh 6vw;
+  font-size: 4.5vw;
   font-weight: bold;
   border: none;
   border-radius: 50px;
@@ -109,7 +114,7 @@ html, body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   transition: var(--transition);
   width: 80%;
-  max-width: 250px;
+  max-width: 400px;
   position: relative;
   overflow: hidden;
 }
@@ -141,11 +146,11 @@ html, body {
 
 /* === HERO SELECTOR === */
 #heroSelect {
-  margin-top: 20px;
+  margin-top: 4vh;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 3vw;
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -155,10 +160,11 @@ html, body {
   align-items: center;
   cursor: pointer;
   transition: var(--transition);
-  padding: 10px;
+  padding: 2vh 2vw;
   border-radius: 12px;
   background: var(--card-bg);
-  width: 100px;
+  width: 25vw;
+  max-width: 120px;
 }
 
 .hero-option:hover {
@@ -180,8 +186,10 @@ html, body {
 }
 
 .hero-icon-container {
-  width: 80px;
-  height: 80px;
+  width: 20vw;
+  height: 20vw;
+  max-width: 100px;
+  max-height: 100px;
   border: 3px solid var(--primary);
   border-radius: 50%;
   padding: 5px;
@@ -201,18 +209,18 @@ html, body {
 }
 
 .hero-name {
-  margin-top: 8px;
+  margin-top: 1vh;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 3.5vw;
   color: var(--text-light);
   text-align: center;
 }
 
 /* === BEST SCORE === */
 #bestScoreText {
-  font-size: 20px;
-  margin-top: 20px;
-  padding: 10px 20px;
+  font-size: 5vw;
+  margin-top: 4vh;
+  padding: 2vh 4vw;
   background: var(--card-bg);
   border-radius: 30px;
   animation: pulse 2s infinite;
@@ -220,14 +228,17 @@ html, body {
 
 /* === GAME WRAPPER === */
 #gameWrapper {
-  position: relative;
-  width: 360px;
-  height: 640px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: black;
   display: none;
-  border-radius: 16px;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: none;
+  z-index: 10;
 }
 
 /* === CANVAS === */
@@ -256,31 +267,31 @@ html, body {
 }
 
 #gameOverScreen h2 {
-  font-size: 36px;
-  margin-bottom: 10px;
+  font-size: 10vw;
+  margin-bottom: 2vh;
   color: var(--primary);
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 #finalScore {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 6vw;
+  margin-bottom: 2vh;
 }
 
 #finalBestScore {
-  font-size: 20px;
-  margin-bottom: 30px;
+  font-size: 5vw;
+  margin-bottom: 4vh;
   color: var(--primary);
 }
 
 /* === IN-GAME UI === */
 #scoreDisplay {
   position: absolute;
-  top: 20px;
+  top: 5vh;
   left: 0;
   width: 100%;
   text-align: center;
-  font-size: 40px;
+  font-size: 12vw;
   font-weight: bold;
   color: white;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
@@ -289,15 +300,17 @@ html, body {
 
 #pauseBtn {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 30px;
-  height: 30px;
+  top: 3vh;
+  right: 5vw;
+  width: 12vw;
+  height: 12vw;
+  max-width: 60px;
+  max-height: 60px;
   background: var(--card-bg);
   border: none;
   border-radius: 50%;
   color: white;
-  font-size: 16px;
+  font-size: 5vw;
   cursor: pointer;
   z-index: 5;
   display: flex;
@@ -322,11 +335,15 @@ html, body {
   backdrop-filter: blur(5px);
 }
 
-/* === MEDIA QUERIES === */
-@media (max-height: 700px) {
-  .title { font-size: 36px; }
-  .subtitle { font-size: 16px; margin-bottom: 20px; }
-  .menu-btn, .btn { padding: 12px 24px; font-size: 16px; }
+/* === TOUCH CONTROL OVERLAY === */
+#touchControl {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  z-index: 5;
+  display: none;
 }
 
 /* === PARTICLE EFFECTS === */
@@ -344,4 +361,33 @@ html, body {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   animation: float 5s infinite ease-in-out;
+}
+
+/* === ORIENTATION WARNING === */
+#orientationWarning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  text-align: center;
+  padding: 10%;
+}
+
+#orientationWarning h2 {
+  font-size: 8vw;
+  margin-bottom: 5vh;
+  color: var(--primary);
+}
+
+#orientationWarning p {
+  font-size: 5vw;
+  line-height: 1.5;
 }
