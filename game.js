@@ -1,3 +1,24 @@
+// ===== DETEKSI ORIENTASI =====
+function checkOrientation() {
+  if (window.innerHeight > window.innerWidth) {
+    // Portrait mode
+    document.getElementById('orientationWarning').style.display = 'flex';
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('gameWrapper').style.display = 'none';
+  } else {
+    // Landscape mode
+    document.getElementById('orientationWarning').style.display = 'none';
+    document.getElementById('menu').style.display = 'flex';
+  }
+}
+
+// Initial check
+checkOrientation();
+
+// Listen for orientation changes
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+
 // ===== INISIALISASI =====
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -8,6 +29,7 @@ const finalScore = document.getElementById("finalScore");
 const finalBestScore = document.getElementById("finalBestScore");
 const scoreDisplay = document.getElementById("scoreDisplay");
 const particlesContainer = document.getElementById("particles");
+const touchControl = document.getElementById("touchControl");
 
 const startBtn = document.getElementById("startBtn");
 const heroBtn = document.getElementById("heroBtn");
@@ -21,9 +43,24 @@ const pauseMenu = document.getElementById("pauseMenu");
 const resumeBtn = document.getElementById("resumeBtn");
 const menuBtn = document.getElementById("menuBtn");
 
-// Ukuran fix portrait
-canvas.width = 360;
-canvas.height = 640;
+// Ukuran canvas menyesuaikan layar
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
+  // Adjust game elements based on screen size
+  if (bird) {
+    // Scale bird size based on screen
+    const baseBirdWidth = 72 * (window.innerWidth / 360);
+    const baseBirdHeight = 54 * (window.innerHeight / 640);
+    bird.width = baseBirdWidth;
+    bird.height = baseBirdHeight;
+  }
+}
+
+// Initial resize
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 // ===== ASSETS & VARIABEL =====
 const bgDay = new Image();
@@ -56,15 +93,24 @@ const hitSound = new Audio("audio/hit.wav");
 const dieSound = new Audio("audio/die.wav");
 const swooshSound = new Audio("audio/swoosh.wav");
 
+// Preload audio
+[wingSound, pointSound, hitSound, dieSound].forEach(sound => {
+  sound.preload = 'auto';
+  sound.load();
+});
+
 // Variabel game
 let bird, pipes, score, gameRunning, gamePaused;
-const gravity = 0.25;
-const jump = 4.6;
-let pipeGap = 160;
-const groundHeight = 100;
-let currentBg = Math.random() > 0.5 ? "day" : "night"; // Random background di menu
+const gravity = 0.5;
+const jump = 7;
+let pipeGap = 200 * (canvas.height / 640);
+const groundHeight = 100 * (canvas.height / 640);
+let currentBg = Math.random() > 0.5 ? "day" : "night";
 let bgCycleTimer;
 let groundOffset = 0;
+let pipeSpeed = 3 * (canvas.width / 360);
+let lastTapTime = 0;
+const tapDelay = 300; // ms
 
 // High score unik per device
 const deviceKey = btoa(navigator.userAgent + screen.width + "x" + screen.height);
@@ -109,11 +155,25 @@ function setMenuBackground() {
 
 // ===== RESET BIRD =====
 function resetBird() {
-  bird = { x: 50, y: 150, width: 72, height: 54, velocity: 0, rotation: 0 };
+  const birdWidth = 72 * (canvas.width / 360);
+  const birdHeight = 54 * (canvas.height / 640);
+  bird = { 
+    x: canvas.width * 0.15, 
+    y: canvas.height / 2 - birdHeight / 2, 
+    width: birdWidth, 
+    height: birdHeight, 
+    velocity: 0, 
+    rotation: 0 
+  };
 }
 
 // ===== START GAME =====
 function startGame() {
+  if (window.innerHeight > window.innerWidth) {
+    alert("Putar perangkat ke mode landscape untuk pengalaman bermain terbaik!");
+    return;
+  }
+
   const heroChoice = document.querySelector('input[name="hero"]:checked').value;
   selectedHero = heroChoice;
   birdImg.src = heroes[selectedHero];
@@ -122,6 +182,11 @@ function startGame() {
   gameWrapper.style.display = "block";
   gameOverScreen.style.display = "none";
   pauseMenu.style.display = "none";
+  touchControl.style.display = "block";
+
+  // Update sizes based on current canvas dimensions
+  pipeGap = 200 * (canvas.height / 640);
+  pipeSpeed = 3 * (canvas.width / 360);
 
   resetBird();
   pipes = [];
@@ -137,12 +202,43 @@ function startGame() {
     currentBg = currentBg === "day" ? "night" : "day";
   }, 20000);
 
-  canvas.addEventListener("click", flap);
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") flap();
-  });
+  // Enable touch controls
+  enableTouchControls();
   
   loop();
+}
+
+// ===== TOUCH CONTROLS =====
+function enableTouchControls() {
+  // Clear previous event listeners
+  canvas.removeEventListener("click", flap);
+  touchControl.removeEventListener("touchstart", handleTouch);
+  document.removeEventListener("keydown", handleKeyDown);
+  
+  // Add new event listeners
+  canvas.addEventListener("click", flap);
+  touchControl.addEventListener("touchstart", handleTouch, { passive: false });
+  document.addEventListener("keydown", handleKeyDown);
+}
+
+function handleTouch(e) {
+  e.preventDefault();
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTapTime;
+  
+  if (tapLength < tapDelay && tapLength > 0) {
+    // Double tap detected, ignore to prevent accidental flaps
+    return;
+  }
+  
+  lastTapTime = currentTime;
+  flap();
+}
+
+function handleKeyDown(e) {
+  if (e.code === "Space") {
+    flap();
+  }
 }
 
 // ===== RESTART =====
@@ -155,6 +251,7 @@ function backToMenu() {
   gameRunning = false;
   clearInterval(bgCycleTimer);
   gameWrapper.style.display = "none";
+  touchControl.style.display = "none";
   menu.style.display = "flex";
   setMenuBackground();
   bestScoreText.textContent = `Best Score: ${highScore}`;
@@ -177,19 +274,21 @@ function togglePause() {
 function flap() {
   if (!gameRunning || gamePaused) return;
   bird.velocity = -jump;
-  bird.rotation = -20; // Rotasi ke atas saat flap
+  bird.rotation = -30; // Rotasi ke atas saat flap
   wingSound.play();
 }
 
 // ===== DRAW SCORE =====
 function drawScore(score, x, y) {
   const digits = score.toString().split('');
-  let totalWidth = digits.length * 24;
+  const digitWidth = 24 * (canvas.width / 360);
+  const digitHeight = 36 * (canvas.height / 640);
+  let totalWidth = digits.length * digitWidth;
   let startX = x - totalWidth / 2;
 
   digits.forEach(d => {
-    ctx.drawImage(numbers[parseInt(d)], startX, y, 24, 36);
-    startX += 24;
+    ctx.drawImage(numbers[parseInt(d)], startX, y, digitWidth, digitHeight);
+    startX += digitWidth;
   });
 }
 
@@ -199,107 +298,4 @@ function gameOver() {
   clearInterval(bgCycleTimer);
 
   hitSound.play();
-  setTimeout(() => dieSound.play(), 300);
-
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem(storageKey, highScore);
-  }
-
-  finalScore.textContent = `Skor: ${score}`;
-  finalBestScore.textContent = `Rekor: ${highScore}`;
-  gameOverScreen.style.display = "flex";
-}
-
-// ===== GAME LOOP =====
-function loop() {
-  if (!gameRunning || gamePaused) return;
-
-  // Draw background
-  ctx.drawImage(currentBg === "day" ? bgDay : bgNight, 0, 0, canvas.width, canvas.height);
-
-  // Generate new pipes
-  if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 200) {
-    let pipeY = Math.floor(Math.random() * (canvas.height - pipeGap - groundHeight - 50)) + 20;
-    pipes.push({ x: canvas.width, y: pipeY, passed: false });
-  }
-
-  // Update and draw pipes
-  pipes.forEach((p, i) => {
-    // Draw top pipe (flipped)
-    ctx.save();
-    ctx.translate(p.x + pipeImg.width/2, p.y - pipeImg.height/2);
-    ctx.scale(1, -1);
-    ctx.drawImage(pipeImg, -pipeImg.width/2, -pipeImg.height/2);
-    ctx.restore();
-    
-    // Draw bottom pipe
-    ctx.drawImage(pipeImg, p.x, p.y + pipeGap);
-    
-    // Move pipe
-    p.x -= 2;
-
-    // Collision detection
-    let hitbox = { x: bird.x+bird.width*0.1, y: bird.y+bird.height*0.1, w: bird.width*0.8, h: bird.height*0.8 };
-    if (hitbox.x + hitbox.w > p.x && hitbox.x < p.x + pipeImg.width && 
-        (hitbox.y < p.y || hitbox.y + hitbox.h > p.y + pipeGap)) {
-      return gameOver();
-    }
-
-    // Score point when passing pipe
-    if (!p.passed && p.x + pipeImg.width < bird.x) {
-      p.passed = true;
-      score++;
-      scoreDisplay.textContent = score;
-      pointSound.play();
-    }
-
-    // Remove off-screen pipes
-    if (p.x + pipeImg.width < 0) pipes.splice(i, 1);
-  });
-
-  // Draw scrolling ground
-  groundOffset = (groundOffset - 2) % 100;
-  ctx.drawImage(ground, groundOffset, canvas.height - groundHeight, canvas.width, groundHeight);
-  ctx.drawImage(ground, groundOffset + canvas.width, canvas.height - groundHeight, canvas.width, groundHeight);
-
-  // Update bird physics
-  bird.velocity += gravity;
-  bird.y += bird.velocity;
-  
-  // Rotate bird based on velocity
-  bird.rotation = Math.min(90, bird.rotation + 2); // Gradually rotate downward
-  if (bird.velocity < 0) bird.rotation = Math.max(-20, bird.rotation - 5); // Rotate upward when flapping
-
-  // Draw bird with rotation
-  ctx.save();
-  ctx.translate(bird.x + bird.width/2, bird.y + bird.height/2);
-  ctx.rotate(bird.rotation * Math.PI/180);
-  ctx.drawImage(birdImg, -bird.width/2, -bird.height/2, bird.width, bird.height);
-  ctx.restore();
-
-  // Ground collision
-  let hitbox = { x: bird.x+bird.width*0.1, y: bird.y+bird.height*0.1, w: bird.width*0.8, h: bird.height*0.8 };
-  if (hitbox.y + hitbox.h >= canvas.height - groundHeight) {
-    return gameOver();
-  }
-
-  requestAnimationFrame(loop);
-}
-
-// ===== EVENT LISTENERS =====
-startBtn.addEventListener("click", startGame);
-restartBtn.addEventListener("click", restartGame);
-restartBtnGameOver.addEventListener("click", restartGame);
-mainMenuBtn.addEventListener("click", backToMenu);
-menuBtn.addEventListener("click", backToMenu);
-heroBtn.addEventListener("click", () => {
-  heroSelect.style.display = heroSelect.style.display === "none" ? "flex" : "none";
-});
-pauseBtn.addEventListener("click", togglePause);
-resumeBtn.addEventListener("click", togglePause);
-
-// Initialize menu background and particles
-setMenuBackground();
-createParticles();
-setInterval(createParticles, 10000); // Recreate particles every 10 seconds
+  setTimeout }
