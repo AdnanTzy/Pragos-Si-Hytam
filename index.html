@@ -2,11 +2,17 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>FlappyClone Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pragos The Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Orientation Warning -->
+  <div id="orientationWarning">
+    <h2>Putar Perangkat Anda</h2>
+    <p>Untuk pengalaman bermain terbaik, putar perangkat Anda ke mode landscape.</p>
+  </div>
+
   <!-- Menu Utama -->
   <div id="menu">
     <div class="particles" id="particles"></div>
@@ -43,6 +49,9 @@
   <!-- Canvas Game -->
   <div id="gameWrapper">
     <canvas id="gameCanvas"></canvas>
+    
+    <!-- Touch Control Overlay -->
+    <div id="touchControl"></div>
     
     <!-- In-Game UI -->
     <div id="scoreDisplay">0</div>
