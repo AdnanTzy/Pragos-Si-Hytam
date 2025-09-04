@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pragos Game Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Orientation Warning -->
+  <div id="orientationWarning">
+    <h2>Putar Perangkat Anda</h2>
+    <p>Untuk pengalaman bermain terbaik, putar perangkat Anda ke mode potrait.</p>
+  </div>
+
+  <!-- Menu Utama -->
+  <div id="menu">
+    <div class="particles" id="particles"></div>
+    <h1 class="title">Pragos The Game</h1>
+    <p class="subtitle">Bantu Pragos Si Hytam Melewati Rintangan!</p>
+    <button id="startBtn" class="menu-btn">Mulai Game</button>
+    <button id="heroBtn" class="menu-btn">Pilih Karakter</button>
+    <div id="heroSelect" style="display:none;">
+      <label class="hero-option">
+        <input type="radio" name="hero" value="Pragos" checked>
+        <div class="hero-icon-container">
+          <img src="assets/Pragos.png" class="hero-icon">
+        </div>
+        <div class="hero-name">Pragos</div>
+      </label>
+      <label class="hero-option">
+        <input type="radio" name="hero" value="Nikskuy">
+        <div class="hero-icon-container">
+          <img src="assets/Nikskuy.png" class="hero-icon">
+        </div>
+        <div class="hero-name">Nikskuy</div>
+      </label>
+      <label class="hero-option">
+        <input type="radio" name="hero" value="Fakriskuy">
+        <div class="hero-icon-container">
+          <img src="assets/Fakriskuy.png" class="hero-icon">
+        </div>
+        <div class="hero-name">Fakriskuy</div>
+      </label>
+    </div>
+    <p id="bestScoreText">Best Score: 0</p>
+  </div>
+
+  <!-- Canvas Game -->
+  <div id="gameWrapper">
+    <canvas id="gameCanvas"></canvas>
+    
+    <!-- Touch Control Overlay -->
+    <div id="touchControl"></div>
+    
+    <!-- In-Game UI -->
+    <div id="scoreDisplay">0</div>
+    <button id="pauseBtn">❚❚</button>
+    
+    <!-- Pause Menu -->
+    <div id="pauseMenu">
+      <h2>Game Dijeda</h2>
+      <button id="resumeBtn" class="btn">Lanjutkan</button>
+      <button id="restartBtn" class="btn">Mulai Ulang</button>
+      <button id="menuBtn" class="btn">Menu Utama</button>
+    </div>
+    
+    <!-- Overlay Game Over -->
+    <div id="gameOverScreen">
+      <h2>Game Over</h2>
+      <p id="finalScore">Skor: 0</p>
+      <p id="finalBestScore">Rekor: 0</p>
+      <button id="restartBtnGameOver" class="btn">Main Lagi</button>
+      <button id="mainMenuBtn" class="btn">Menu Utama</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
