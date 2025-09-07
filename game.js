@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-document.addEventListener('touchstart', handleJump);
   // Elemen DOM
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
@@ -444,3 +443,4 @@ document.addEventListener('touchstart', handleJump);
   resizeCanvas();
   backToMenu();
 });
+
