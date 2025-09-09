@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pragos Game Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <div class="game-container">
+
+   <div id="menu" role="menu">
+    <div class="particles" id="particles" aria-hidden="true"></div>
+    <div class="menu-card">
+      <h1 class="title">PRAGOS The Game</h1>
+      <p class="subtitle">Bantu Pragos Si Hytam melewati rintangan!</p>
+
+      <div class="menu-controls">
+        <button id="startBtn" class="menu-btn" aria-label="Mulai Game">Mulai Game</button>
+        <button id="heroBtn" class="menu-btn" aria-expanded="false">Pilih Karakter</button>
+        <button id="leaderboardBtn" class="menu-btn" aria-label="Lihat Leaderboard">Leaderboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="heroSelect" style="display:none;">
+    <div class="hero-panel">
+      <div class="hero-list">
+        <div class="hero-row">
+          <label class="hero-option">
+            <input type="radio" name="hero" value="Pragos" checked>
+            <div class="hero-icon-container">
+              <img src="assets/Pragos.png" class="hero-icon" alt="Pragos">
+            </div>
+            <div class="hero-name">Pragos</div>
+          </label>
+
+          <label class="hero-option">
+            <input type="radio" name="hero" value="Nikskuy">
+            <div class="hero-icon-container">
+              <img src="assets/Nikskuy.png" class="hero-icon" alt="Nikskuy">
+            </div>
+            <div class="hero-name">Nikskuy</div>
+          </label>
+
+          <label class="hero-option">
+            <input type="radio" name="hero" value="Fakriskuy">
+            <div class="hero-icon-container">
+              <img src="assets/Fakriskuy.png" class="hero-icon" alt="Fakriskuy">
+            </div>
+            <div class="hero-name">Fakriskuy</div>
+          </label>
+        </div>
+
+        <div class="hero-row">
+          <label class="hero-option">
+            <input type="radio" name="hero" value="Ohim">
+            <div class="hero-icon-container">
+              <img src="assets/Ohim.png" class="hero-icon" alt="Ohim">
+            </div>
+            <div class="hero-name">Ohim</div>
+          </label>
+
+          <label class="hero-option">
+            <input type="radio" name="hero" value="Tongskuy">
+            <div class="hero-icon-container">
+              <img src="assets/Tongskuy.png" class="hero-icon" alt="Tongskuy">
+            </div>
+            <div class="hero-name">Tongskuy</div>
+          </label>
+
+          <label class="hero-option">
+            <input type="radio" name="hero" value="Madskuy">
+            <div class="hero-icon-container">
+              <img src="assets/Madskuy.png" class="hero-icon" alt="Madskuy">
+            </div>
+            <div class="hero-name">Madskuy</div>
+          </label>
+        </div>
+      </div>
+      <button id="backBtn" class="btn">< Back</button>
+    </div>
+  </div>
+
+  <div id="leaderboardScreen" style="display: none;">
+    <div class="leaderboard-box">
+      <h2>Leaderboard</h2>
+
+      <!-- Leaderboard List -->
+      <div id="leaderboardList" class="leaderboard-list">
+        <div class="loading-spinner" id="loadingSpinner">
+          <div class="spinner"></div>
+          <p>Loading leaderboard...</p>
+        </div>
+      </div>
+
+      <button id="leaderboardBackBtn" class="btn">< Kembali</button>
+    </div>
+  </div>
+
+  <div id="gameWrapper" aria-hidden="true">
+    <canvas id="gameCanvas" tabindex="0"></canvas>
+
+    <div id="touchControl" aria-hidden="true"></div>
+
+    <div id="hud">
+      <button id="pauseBtn" title="Pause">❚❚</button>
+    </div>
+
+    <div id="pauseMenu" role="dialog" aria-hidden="true">
+      <h2>Game Dijeda</h2>
+      <button id="resumeBtn" class="btn">Lanjutkan</button>
+      <button id="restartBtn" class="btn">Mulai Ulang</button>
+      <button id="menuBtn" class="btn">Menu Utama</button>
+    </div>
+
+    <div id="gameOverScreen" role="dialog" aria-hidden="true">
+      <div class="game-over-box">
+        <img src="assets/gameover.png" class="game-over-img" alt="Game Over">
+        <p id="finalScore">Skor: 0</p>
+        <p id="finalBestScore">Rekor: 0</p>
+
+        <!-- High Score Input (shown only for high scores) -->
+        <div id="highScoreInput" style="display: none;">
+          <p style="color: #FFD700; font-weight: bold; margin: 15px 0;">🎉 Skor Tinggi Baru!</p>
+          <input type="text" id="playerNameInput" placeholder="Masukkan nama Anda" maxlength="20" class="name-input">
+          <button id="submitScoreBtn" class="btn btn-primary">Kirim Skor</button>
+        </div>
+
+        <div id="highScoreSection">
+          </div>
+
+        <button id="restartBtnGameOver" class="btn">Coba Lagi</button>
+        <button id="mainMenuBtn" class="btn">Menu Utama</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
